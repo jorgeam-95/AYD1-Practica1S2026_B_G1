@@ -33,7 +33,6 @@ function InicioNotas({ notes, tags }) {
   return (
     <div className="w-full h-full bg-gradient-to-br from-green-300 via-blue-400 to-purple-500 p-8 overflow-y-auto">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-white tracking-wide drop-shadow-lg">
             Mis Notas

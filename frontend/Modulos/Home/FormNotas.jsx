@@ -39,7 +39,7 @@ function FormNotas({ note, tags, onClose, onSuccess }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.titulo.trim()) {
@@ -49,11 +49,47 @@ function FormNotas({ note, tags, onClose, onSuccess }) {
     }
 
     console.log('Guardando nota:', formData);
+
+    const etiquetaFinal = showNewTag
+    ? formData.nueva_etiqueta
+    : tags.find(tag => tag.id === formData.etiqueta_id)?.nombre || "";
+
+    const notaEnviar = {
+      titulo: formData.titulo,
+      descripcion: formData.descripcion,
+      etiqueta: etiquetaFinal,
+      fijada: false,
+      archivada: false,
+      usuario: "jorge"
+    };
     
+     try {
+      const response = await fetch("http://127.0.0.1:8000/notas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(notaEnviar)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Nota Craeada con exito")
+        console.log("Nota creada:", data);
+        if (onSuccess) onSuccess();
+      } else {
+        setErrorText("Error al crear la nota");
+        setShowError(true);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorText("Error de conexión con el servidor");
+      setShowError(true);
+    }
+
     // Simular guardado para agregar funcionalidad despuesxd
-    setTimeout(() => {
-      if (onSuccess) onSuccess();
-    }, 500);
+    //setTimeout(() => {
+    //  if (onSuccess) onSuccess();
+    //}, 500);
   };
 
   return (
