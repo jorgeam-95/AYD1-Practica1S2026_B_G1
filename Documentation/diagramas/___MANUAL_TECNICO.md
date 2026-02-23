@@ -197,6 +197,10 @@ Se manejan excepciones con HTTPException.
 
 Se controla acceso mediante validación de usuario existente.
 
+## Diagrama de Workflow
+
+![Diagrama de Workflow](Documentation/diagramas/workflow-git.png)
+
 ## 11. Conclusión
 
 El backend fue desarrollado utilizando FastAPI y MongoDB, siguiendo una arquitectura modular que separa modelos, conexión a base de datos y controladores.
