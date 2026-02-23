@@ -6,6 +6,9 @@ function Archivo({ notes }) {
     console.log('Desarchivar:', noteId);
   };
 
+  // NUEVO: Filtramos para que SOLO queden las notas que SÍ están archivadas
+  const notasArchivadas = notes.filter(note => note.archivada);
+
   return (
     <div className="w-full h-full bg-gradient-to-br from-green-300 via-blue-400 to-purple-500 p-8 overflow-y-auto">
       <div className="max-w-7xl mx-auto">
@@ -19,7 +22,8 @@ function Archivo({ notes }) {
           </p>
         </div>
 
-        {notes.length === 0 ? (
+        {/* NUEVO: Verificamos notasArchivadas en lugar de notes */}
+        {notasArchivadas.length === 0 ? (
           <div className="text-center py-20">
             <div className="bg-white/30 backdrop-blur-lg rounded-2xl p-12 max-w-md mx-auto border border-white/40 shadow-2xl">
               <Archive size={80} className="mx-auto mb-6 text-white" strokeWidth={1.5} />
@@ -33,7 +37,8 @@ function Archivo({ notes }) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {notes.map(note => (
+            {/* NUEVO: Mapeamos sobre notasArchivadas */}
+            {notasArchivadas.map(note => (
               <div key={note.id} className="relative">
                 <NoteCard
                   note={note}
