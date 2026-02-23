@@ -21,7 +21,22 @@ function Registrarse(){
             setMesserror(true)
         }
 
+        const response = await fetch("http://127.0.0.1:8000/registro",{
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "usuario": usuario,
+                "password": password,
+            })
+        })
+
+        if (response.status == 200) {
+            alert( "Usuario creado con Exito" );
+        }
+
     }
+
+
 
     useEffect( () =>{
         if ( messerror ) {
