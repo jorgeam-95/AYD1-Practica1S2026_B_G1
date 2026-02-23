@@ -10,7 +10,24 @@ function Login(){
 
   const Loguearse = async () => {
 
-    
+    const response = await fetch("http://127.0.0.1:8000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            usuario,
+            password
+        })
+    })
+
+    const data = await response.json()
+    if (response.ok) {
+        alert("Login correcto")
+        navigate("/home");
+    } else {
+        alert("Usuario o contrase invalida")
+        console.log("Error:", data.detail)
+    }
+
   }
 
     return (
@@ -60,7 +77,10 @@ function Login(){
         </div>
 
           <div className="flex justify-center">
-            <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-300">
+            <button 
+            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-300"
+            onClick={Loguearse}
+            >
               Ingresar
             </button>
           </div>

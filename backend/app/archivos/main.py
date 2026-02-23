@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
 from db.conection import usuarios_collection
 from modelos.usuario import Usuario
+from modelos.login  import Login
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -22,3 +23,17 @@ def crear_usuario(usuario: Usuario):
         "status": 200,
         "mensaje": "usuario creado con exito"
     }
+
+@app.post("/login")
+def login( datos: Login ):
+    usuario_encontrado = usuarios_collection.find_one({
+        "usuario":datos.usuario
+    })
+    
+    if not usuario_encontrado:
+        raise HTTPException(status_code=404, detail="Usuario no existe")
+    
+    if usuario_encontrado["password"] != datos.password:
+        raise HTTPException(status_code=401, detail="Password incorrecto")
+
+    return {"mensaje": "Login exitoso"}
