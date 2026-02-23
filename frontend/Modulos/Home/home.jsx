@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import InicioNotas from './InicioNotas';
 import Archivo from './Archivo';
 import Compartido from './Compartido';
 import Perfil from './Perfil';
+import { useParams } from 'react-router-dom';
 
 function Home() {
+  const {usuario} = useParams();
+  const navigate = useNavigate();
   const [notes, setNotes] = useState([
-    // ejemplo para mientras
     {
       id: 1,
       titulo: "Mi primera nota",
@@ -40,15 +42,15 @@ function Home() {
   ]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Usuario de ejemplo
   const user = {
-    nombre: "Usuario Demo",
-    email: "demo@gmail.com"
+    nombre: usuario,
+    //email: "demo@gmail.com"
   };
 
   const handleLogout = () => {
     console.log("Cerrando sesión...");
-    // Aquí iría la lógica de logout
+    localStorage.removeItem("usuario");
+    navigate("/");
   };
 
   const toggleSidebar = () => {
@@ -74,6 +76,7 @@ function Home() {
                 <InicioNotas
                   notes={notes}
                   tags={tags}
+                  usuario={usuario}
                 />
               } 
             />

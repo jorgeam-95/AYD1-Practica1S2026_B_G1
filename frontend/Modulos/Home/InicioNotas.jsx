@@ -7,8 +7,12 @@ function InicioNotas({ notes, tags }) {
   const [showForm, setShowForm] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
 
-  const pinnedNotes = notes.filter(note => note.fijada);
-  const regularNotes = notes.filter(note => !note.fijada);
+  // NUEVO: Filtramos para que SOLO pasen las notas que NO están archivadas
+  const notasActivas = notes.filter(note => !note.archivada);
+
+  // NUEVO: Usamos 'notasActivas' en lugar de 'notes' para separar las fijadas
+  const pinnedNotes = notasActivas.filter(note => note.fijada);
+  const regularNotes = notasActivas.filter(note => !note.fijada);
 
   const handleCreateNote = () => {
     setEditingNote(null);
@@ -47,8 +51,8 @@ function InicioNotas({ notes, tags }) {
           </button>
         </div>
 
-        {/* Empty State */}
-        {notes.length === 0 ? (
+        {/* Empty State - NUEVO: verificamos notasActivas.length */}
+        {notasActivas.length === 0 ? (
           <div className="text-center py-20">
             <div className="bg-white/30 backdrop-blur-lg rounded-2xl p-12 max-w-md mx-auto border border-white/40 shadow-2xl">
               <StickyNote size={80} className="mx-auto mb-6 text-white" strokeWidth={1.5} />
