@@ -3,7 +3,7 @@ import { Plus, StickyNote, Pin } from 'lucide-react';
 import Notas from './Notas';
 import FormNotas from './FormNotas';
 
-function InicioNotas({ notes, tags }) {
+function InicioNotas({ notes, tags, usuario }) {
   const [showForm, setShowForm] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
 
@@ -113,6 +113,7 @@ function InicioNotas({ notes, tags }) {
           <FormNotas
             note={editingNote}
             tags={tags}
+            usuarioown={usuario}
             onClose={handleCloseForm}
             onSuccess={handleFormSuccess}
           />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import AlertaError from '../Alertas/AlertaError';
 
-function FormNotas({ note, tags, onClose, onSuccess }) {
+function FormNotas({ note, tags, onClose, onSuccess, usuarioown }) {
   const [formData, setFormData] = useState({
     titulo: '',
     descripcion: '',
@@ -60,7 +60,7 @@ function FormNotas({ note, tags, onClose, onSuccess }) {
       etiqueta: etiquetaFinal,
       fijada: false,
       archivada: false,
-      usuario: "jorge"
+      usuario: usuarioown
     };
     
      try {
