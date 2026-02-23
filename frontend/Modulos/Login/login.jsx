@@ -22,7 +22,7 @@ function Login(){
     const data = await response.json()
     if (response.ok) {
         alert("Login correcto")
-        navigate("/home");
+        navigate(`/home/${usuario}`);
     } else {
         alert("Usuario o contrase invalida")
         console.log("Error:", data.detail)
