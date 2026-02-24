@@ -30,7 +30,7 @@ function InicioNotas({ notes, tags }) {
   };
 
   const handleFormSuccess = () => {
-    console.log('Nota guardada exitosamente');
+    console.log('Nota guardadas exitosamente');
     handleCloseForm();
   };
 

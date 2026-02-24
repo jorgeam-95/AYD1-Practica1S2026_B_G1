@@ -14,7 +14,7 @@ function Registrarse(){
     const validarRegistro = async () =>{
 
         if ( password === "" || confpassw === "" || usuario === "" ) {
-            setTxtmess("Es necesario rellenar todos los campos")
+            setTxtmess("Es necesario rellenar todos los campos necesarios")
             setMesserror(true)
         } else if(  password !== confpassw  ){
             setTxtmess("La contraseña no coincide") 
