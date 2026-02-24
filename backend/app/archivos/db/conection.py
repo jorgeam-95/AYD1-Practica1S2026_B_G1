@@ -11,3 +11,4 @@ client = MongoClient(uri)
 db = client["notas"] 
 usuarios_collection = db["usuarios"] 
 notas_collection = db["notas"]
+compartidas_collection = db["compartidas"]

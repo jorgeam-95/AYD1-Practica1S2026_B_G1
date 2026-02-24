@@ -4,7 +4,7 @@ from db.conection import usuarios_collection
 from modelos.usuario import Usuario
 from modelos.login  import Login
 from modelos.nota import Nota
-from db.conection import notas_collection
+from db.conection import notas_collection, compartidas_collection
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -74,4 +74,49 @@ def archivar_nota(titulo: str):
 @app.get("/notas/archivadas/{usuario}")
 def obtener_archivadas(usuario: str):
     notas = list(notas_collection.find({"usuario": usuario, "archivada": True}, {"_id": 0}))
+    return {"status": 200, "notas": notas}
+
+# --- NUEVO MODELO PARA COMPARTIR ---
+class CompartirRequest(BaseModel):
+    titulo: str
+    usuario_origen: str
+    usuario_destino: str
+
+# --- NUEVOS ENDPOINTS PARA COMPARTIR ---
+
+@app.post("/notas/compartir")
+def compartir_nota(datos: CompartirRequest):
+    # 1. Verificar que el usuario destino existe
+    usuario_dest = usuarios_collection.find_one({"usuario": datos.usuario_destino})
+    if not usuario_dest:
+        raise HTTPException(status_code=404, detail="El usuario destino no existe")
+
+    # 2. Buscar la nota original del usuario origen
+    nota_original = notas_collection.find_one({"titulo": datos.titulo, "usuario": datos.usuario_origen})
+    if not nota_original:
+        raise HTTPException(status_code=404, detail="La nota original no existe")
+
+    # 3. Crear el nuevo registro de nota compartida
+    nota_compartida = {
+        "titulo": nota_original["titulo"],
+        "descripcion": nota_original.get("descripcion", ""),
+        "etiqueta_nombre": nota_original.get("etiqueta_nombre", "General"),
+        "usuario_origen": datos.usuario_origen,
+        "usuario_destino": datos.usuario_destino
+    }
+
+    # 4. Guardar en la base de datos
+    compartidas_collection.insert_one(nota_compartida)
+    return {"status": 200, "mensaje": "Nota compartida con éxito"}
+
+@app.get("/notas/compartidas/{usuario}")
+def obtener_compartidas(usuario: str):
+    # Notas que otros compartieron CONMIGO (yo soy el destino)
+    notas = list(compartidas_collection.find({"usuario_destino": usuario}, {"_id": 0}))
+    return {"status": 200, "notas": notas}
+
+@app.get("/notas/mis-compartidas/{usuario}")
+def obtener_mis_compartidas(usuario: str):
+    # Notas que YO compartí con otros (yo soy el origen)
+    notas = list(compartidas_collection.find({"usuario_origen": usuario}, {"_id": 0}))
     return {"status": 200, "notas": notas}

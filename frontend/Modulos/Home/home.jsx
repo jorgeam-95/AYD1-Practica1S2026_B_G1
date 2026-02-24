@@ -42,6 +42,45 @@ function Home() {
   ]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
+  // --- FUNCIÓN PARA CARGAR TODA LA INFORMACIÓN DEL BACKEND ---
+  const fetchAllData = async () => {
+    if (!usuario) return;
+    
+    try {
+      // 1. Obtener Notas Activas (No archivadas)
+      const resActivas = await fetch(`http://localhost:8000/notas/${usuario}`);
+      const dataActivas = await resActivas.json();
+      if (dataActivas.status === 200) {
+        setNotes(dataActivas.notas);
+      }
+
+      // 2. Obtener Notas Archivadas
+      const resArchivadas = await fetch(`http://localhost:8000/notas/archivadas/${usuario}`);
+      const dataArchivadas = await resArchivadas.json();
+      if (dataArchivadas.status === 200) {
+        setArchivedNotes(dataArchivadas.notas);
+      }
+
+      // 3. Obtener notas que me compartieron
+      const resRecibidas = await fetch(`http://localhost:8000/notas/compartidas/${usuario}`);
+      const dataRecibidas = await resRecibidas.json();
+      if (dataRecibidas.status === 200) setSharedNotes(dataRecibidas.notas);
+
+      // 4. Obtener notas que yo compartí
+      const resMisCompartidas = await fetch(`http://localhost:8000/notas/mis-compartidas/${usuario}`);
+      const dataMisCompartidas = await resMisCompartidas.json();
+      if (dataMisCompartidas.status === 200) setMySharedNotes(dataMisCompartidas.notas);
+
+    } catch (error) {
+      console.error("Error conectando con el servidor:", error);
+    }
+  };
+
+  // Se ejecuta al cargar el componente o cuando el usuario cambia
+  useEffect(() => {
+    fetchAllData();
+  }, [usuario]);
+
   const user = {
     nombre: usuario,
     //email: "demo@gmail.com"
