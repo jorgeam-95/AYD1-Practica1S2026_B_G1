@@ -199,7 +199,7 @@ Se controla acceso mediante validación de usuario existente.
 
 ## Diagrama de Workflow
 
-![Diagrama de Workflow](diagramas/flujo_de_trabajo_.pdf.jpg)
+![Diagrama de Workflow](flujo_de_trabajo_.pdf.jpg)
 
 ## 11. Conclusión
 
