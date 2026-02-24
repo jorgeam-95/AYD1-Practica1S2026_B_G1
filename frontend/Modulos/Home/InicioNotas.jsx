@@ -3,7 +3,8 @@ import { Plus, StickyNote, Pin } from 'lucide-react';
 import Notas from './Notas';
 import FormNotas from './FormNotas';
 
-function InicioNotas({ notes, tags }) {
+// CORRECCIÓN: Agregar usuario y onRefresh aquí
+function InicioNotas({ notes, tags, usuario, onRefresh }) { 
   const [showForm, setShowForm] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
 
@@ -31,8 +32,55 @@ function InicioNotas({ notes, tags }) {
 
   const handleFormSuccess = () => {
     console.log('Nota guardada exitosamente');
+    if (onRefresh) onRefresh(); // Verificamos que exista antes de llamarla
     handleCloseForm();
   };
+
+  // --- Función para ARCHIVAR ---
+  const handleArchiveNote = async (titulo) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/notas/archivar/${titulo}`, {
+        method: 'PUT'
+      });
+      if (response.ok) {
+        console.log(`Nota "${titulo}" archivada`);
+        if (onRefresh) onRefresh(); // Recarga la pantalla
+      }
+    } catch (error) {
+      console.error("Error al archivar:", error);
+    }
+  };
+
+  // --- Función para FIJAR ---
+  const handlePinNote = async (titulo) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/notas/fijar/${titulo}`, {
+        method: 'PUT'
+      });
+      if (response.ok) {
+        console.log(`Estado de fijación cambiado para "${titulo}"`);
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      console.error("Error al fijar:", error);
+    }
+  };
+
+  // --- Función para ELIMINAR ---
+  const handleDeleteNote = async (titulo) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/notas/${titulo}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        console.log(`Nota "${titulo}" eliminada`);
+        if (onRefresh) onRefresh();
+      }
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+    }
+  };
+  
 
   return (
     <div className="w-full h-full bg-gradient-to-br from-green-300 via-blue-400 to-purple-500 p-8 overflow-y-auto">
@@ -120,6 +168,7 @@ function InicioNotas({ notes, tags }) {
             tags={tags}
             onClose={handleCloseForm}
             onSuccess={handleFormSuccess}
+            usuarioown={usuario} // Le pasamos el usuario al formulario
           />
         )}
       </div>
