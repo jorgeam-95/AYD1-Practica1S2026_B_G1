@@ -37,7 +37,7 @@ function Compartido({ receivedNotes, mySharedNotes }) {
             }`}
           >
             <Inbox size={20} />
-            Recibidas ({receivedNotes.length})
+            Recibidas ({receivedNotes?.length || 0})
           </button>
           <button
             onClick={() => setActiveTab('compartido')}
@@ -48,15 +48,16 @@ function Compartido({ receivedNotes, mySharedNotes }) {
             }`}
           >
             <Send size={20} />
-            Compartidas por mí ({mySharedNotes.length})
+            Compartidas por mí ({mySharedNotes?.length || 0})
           </button>
         </div>
 
         {/* Content */}
         <div>
+          {/* PESTAÑA 1: RECIBIDAS */}
           {activeTab === 'received' && (
             <div>
-              {receivedNotes.length === 0 ? (
+              {!receivedNotes || receivedNotes.length === 0 ? (
                 <div className="text-center py-20">
                   <div className="bg-white/30 backdrop-blur-lg rounded-2xl p-12 max-w-md mx-auto border border-white/40 shadow-2xl">
                     <Inbox size={80} className="mx-auto mb-6 text-white" strokeWidth={1.5} />
@@ -70,8 +71,8 @@ function Compartido({ receivedNotes, mySharedNotes }) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {receivedNotes.map(note => (
-                    <div key={note.id} className="bg-white/30 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-white/40 hover:shadow-2xl transition-all">
+                  {receivedNotes.map((note, index) => (
+                    <div key={`received-${index}`} className="bg-white/30 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-white/40 hover:shadow-2xl transition-all">
                       <div className="flex justify-between items-start mb-3">
                         <div>
                           {note.etiqueta_nombre && (
@@ -83,16 +84,17 @@ function Compartido({ receivedNotes, mySharedNotes }) {
                             {note.titulo}
                           </h3>
                         </div>
+                        {/* Corrección: Mostramos el usuario_origen (quién la envió) */}
                         <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm px-3 py-1 rounded-full font-medium shadow-lg flex items-center gap-1">
                           <User size={14} />
-                          {note.propietario_nombre}
+                          {note.usuario_origen}
                         </span>
                       </div>
                       {note.descripcion && (
                         <p className="text-white/90 mb-4">{note.descripcion}</p>
                       )}
                       <div className="text-sm text-white/70 font-medium">
-                        Compartida el {formatDate(note.compartida_en || new Date())}
+                        Compartida el {formatDate(new Date())}
                       </div>
                     </div>
                   ))}
@@ -101,9 +103,10 @@ function Compartido({ receivedNotes, mySharedNotes }) {
             </div>
           )}
 
+          {/* PESTAÑA 2: COMPARTIDAS POR MÍ */}
           {activeTab === 'compartido' && (
             <div>
-              {mySharedNotes.length === 0 ? (
+              {!mySharedNotes || mySharedNotes.length === 0 ? (
                 <div className="text-center py-20">
                   <div className="bg-white/30 backdrop-blur-lg rounded-2xl p-12 max-w-md mx-auto border border-white/40 shadow-2xl">
                     <Send size={80} className="mx-auto mb-6 text-white" strokeWidth={1.5} />
@@ -117,8 +120,8 @@ function Compartido({ receivedNotes, mySharedNotes }) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {mySharedNotes.map(note => (
-                    <div key={note.id} className="bg-white/30 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-white/40 hover:shadow-2xl transition-all">
+                  {mySharedNotes.map((note, index) => (
+                    <div key={`shared-${index}`} className="bg-white/30 backdrop-blur-lg rounded-2xl shadow-xl p-6 border border-white/40 hover:shadow-2xl transition-all">
                       <div className="flex justify-between items-start mb-3">
                         <div>
                           {note.etiqueta_nombre && (
@@ -137,17 +140,14 @@ function Compartido({ receivedNotes, mySharedNotes }) {
                       <div className="mt-4 pt-4 border-t border-white/30">
                         <p className="text-sm font-semibold text-white mb-2">Compartida con:</p>
                         <div className="flex flex-wrap gap-2">
-                          {note.compartida_con?.map(user => (
-                            <div key={user.id} className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 shadow-lg">
-                              <User size={14} />
-                              <span>{user.nombre}</span>
-                              <button className="hover:text-red-300 transition-colors">
-                                <X size={14} />
-                              </button>
-                            </div>
-                          )) || (
-                            <span className="text-white/70 text-sm">No compartida aún</span>
-                          )}
+                          {/* Corrección: Mostramos directamente al usuario_destino */}
+                          <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 shadow-lg w-max">
+                            <User size={14} />
+                            <span>{note.usuario_destino}</span>
+                            <button className="hover:text-red-300 transition-colors ml-1">
+                              <X size={14} />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
